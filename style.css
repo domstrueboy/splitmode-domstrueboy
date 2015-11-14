@@ -1,0 +1,109 @@
+/* Sticky footer styles
+-------------------------------------------------- */
+html {
+  position: relative;
+  min-height: 100%;
+}
+body {
+  /* Margin bottom by footer height */
+  margin-bottom: 60px;
+}
+.footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  /* Set the fixed height of the footer here */
+  height: 60px;
+  background-color: #f5f5f5;
+}
+
+
+/* Custom page CSS
+-------------------------------------------------- */
+/* Not required for template or sticky footer method. */
+
+body > .container {
+  padding: 60px 15px 0;
+}
+.container .text-muted {
+  margin: 10px 0;
+}
+
+.footer > .container {
+  padding-right: 15px;
+  padding-left: 15px;
+}
+
+.field {
+  width: 300px;
+  padding: 0;
+}
+
+.row {
+  margin: 0;
+}
+
+.cell {
+  margin: 0;
+  padding: 0;
+  height: 100px;
+  position: relative;
+}
+
+.cross::before {
+  content:"";
+  height: 10px;
+  width: 80px;
+  transform: rotate(45deg);
+  border-radius: 5px;
+  position: absolute;
+  top: 45px;
+  left: 10px;
+  background: black;
+}
+
+.cross::after {
+  content:"";
+  position: absolute;
+  height: 10px;
+  width: 80px;
+  top: 45px;
+  left: 10px;
+  border-radius: 5px;
+  transform: rotate(-45deg);
+  background-color: black;
+
+}
+
+.toe::before {
+  content:"";
+  height: 80px;
+  width: 80px;
+  top: 10px;
+  left: 10px;
+  border-radius: 50%;
+  background: black;
+  position: absolute;
+}
+
+.toe::after {
+  content:"";
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background-color: #F7F7F9;
+}
+
+.score-value {
+  color: black;
+  font-size: 40px;
+  font-weight: bold;
+  line-height: 40px;
+}
+
+small {
+  color: gray;
+}
