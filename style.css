@@ -75,7 +75,7 @@ body > .container {
 
 }
 
-.toe::before {
+.zero::before {
   content:"";
   height: 80px;
   width: 80px;
@@ -86,7 +86,7 @@ body > .container {
   position: absolute;
 }
 
-.toe::after {
+.zero::after {
   content:"";
   position: absolute;
   top: 20px;
