@@ -97,6 +97,60 @@ body > .container {
   background-color: #F7F7F9;
 }
 
+.score-cell {
+  margin: 0;
+  padding: 0;
+  height: 60px;
+  position: relative;
+}
+
+.score-cross::before {
+  content:"";
+  height: 5px;
+  width: 50px;
+  transform: rotate(45deg);
+  border-radius: 2px;
+  position: absolute;
+  top: 27px;
+  left: 5px;
+  background: black;
+}
+
+.score-cross::after {
+  content:"";
+  position: absolute;
+  height: 5px;
+  width: 50px;
+  top: 27px;
+  left: 5px;
+  border-radius: 2px;
+  transform: rotate(-45deg);
+  background-color: black;
+
+}
+
+.score-zero::before {
+  content:"";
+  height: 40px;
+  width: 40px;
+  top: 10px;
+  right: 10px;
+  border-radius: 50%;
+  background: black;
+  position: absolute;
+}
+
+.score-zero::after {
+  content:"";
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background-color: #F7F7F9;
+}
+
 .score-value {
   color: black;
   font-size: 40px;
