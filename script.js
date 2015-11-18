@@ -7,6 +7,16 @@
           this.appBuild();
         },
 
+        newGame: function(){
+          this.resetBoard();
+          this.step = 1;
+          this.state = "zero";
+          this.displayCurrentPlayer();
+          this.scoreZero = 0;
+          this.scoreCross = 0;
+          this.scoreUpdate();
+        },
+
         appBuild: function(){
           this.menuControl();
           this.clickControl();
@@ -19,45 +29,45 @@
           this.displayCurrentPlayer();
         },
 
-        newGame: function(){
-          this.resetBoard();
-          this.step = 1;
-          this.state = "zero";
-          this.displayCurrentPlayer();
-          this.scoreZero = 0;
-          this.scoreCross = 0;
-          this.scoreUpdate();
-
-        },
-
         nextStep: function(){
-          return ++this.step;
+          this.step++;
+          this.stateUpdate();
+          this.displayCurrentPlayer();
         },
 
     		stateUpdate: function(){
     			if(this.state === "cross"){
-    				return "zero";
+    				this.state = "zero";
     			} else if(this.state === "zero"){
-    				return "cross";
+    				this.state = "cross";
     			}
     		},
+
+        displayCurrentPlayer: function(){
+          if(app.state === "zero"){
+            $(".score-cell-cross").removeClass("score-cross");
+            $(".score-cell-zero").addClass("score-zero");
+          } else if(app.state === "cross"){
+            $(".score-cell-zero").removeClass("score-zero");
+            $(".score-cell-cross").addClass("score-cross");
+          }
+        },
 
         playerWin: function(classDetected){
 
           if(classDetected === "zero"){
-    				app.scoreZero += 2;
+    				this.scoreZero += 2;
     			} else if(classDetected === "cross"){
-    				app.scoreCross += 2;
+    				this.scoreCross += 2;
     			}
 
-          app.scoreUpdate();
+          this.scoreUpdate();
         },
 
         friendshipWin: function(){
-    				app.scoreZero++;
-    				app.scoreCross++;
-
-            app.scoreUpdate();
+    				this.scoreZero++;
+    				this.scoreCross++;
+            this.scoreUpdate();
         },
 
         scoreUpdate: function(){
@@ -71,16 +81,6 @@
           });
         },
 
-        displayCurrentPlayer: function(){
-          if(app.state === "zero"){
-            $(".score-cell-cross").removeClass("score-cross");
-            $(".score-cell-zero").addClass("score-zero");
-          } else if(app.state === "cross"){
-            $(".score-cell-zero").removeClass("score-zero");
-            $(".score-cell-cross").addClass("score-cross");
-          }
-        },
-
         clickControl: function(){
 
 			       $(".cell").click(function(){
@@ -88,9 +88,7 @@
                 if(!$(this).hasClass("zero") && !$(this).hasClass("cross")){
 
                   $(this).addClass(app.state);
-                  app.step = app.nextStep();
-                  app.state = app.stateUpdate();
-                  app.displayCurrentPlayer();
+                  app.nextStep();
 
                   if(app.step > 5){
                     app.detectWin("zero");
@@ -145,10 +143,10 @@
              $(".row2:eq(1)").hasClass(classDetected) &&
              $(".row3:eq(0)").hasClass(classDetected))
            ){
-             app.prevWinner = classDetected;
-             app.playerWin(classDetected);
+             this.prevWinner = classDetected;
+             this.playerWin(classDetected);
              alert(classDetected.charAt(0).toUpperCase() + classDetected.substr(1) + " WIN!");
-             app.nextGame();
+             this.nextGame();
           }
 
         }
