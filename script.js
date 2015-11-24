@@ -5,6 +5,7 @@
         init: function(){
           this.newGame();
           this.appBuild();
+          this.networkGame();
         },
 
         newGame: function(){
@@ -149,6 +150,76 @@
              this.nextGame();
           }
 
+        },
+
+        networkGame: function () {
+          this.listGameRequest();
+        },
+
+        listGameRequest: function () {
+          // 1. Создаём новый объект XMLHttpRequest
+          var xhrNewGame = new XMLHttpRequest();
+
+          // 2. Конфигурируем его: GET-запрос на URL 'phones.json'
+          xhrNewGame.open('GET', 'http://aqueous-ocean-2864.herokuapp.com/games', true);
+
+          // 3. Отсылаем запрос
+          xhrNewGame.send();
+
+          xhrNewGame.onreadystatechange = function() {
+              if (xhrNewGame.readyState != 4) {
+                return;
+              }
+
+              console.log('Готово!');
+
+              // 4. Если код ответа сервера не 200, то это ошибка
+              if (xhrNewGame.status != 200) {
+                  // обработать ошибку
+                  alert( xhrNewGame.status + ': ' + xhrNewGame.statusText ); // пример вывода: 404: Not Found
+              } else {
+                  // вывести результат
+                  var response = JSON.parse(xhrNewGame.responseText);
+                  var tokens = [];
+                  for(var i = 0; i < response.length; i++){
+                    tokens.push(response[i].token);
+                  }
+                  alert(tokens); // responseText -- текст ответа.
+              }
+          }
+        },
+
+        newGameRequest: function () {
+          // 1. Создаём новый объект XMLHttpRequest
+          var xhrNewGame = new XMLHttpRequest();
+
+          // 2. Конфигурируем его: GET-запрос на URL 'phones.json'
+          xhrNewGame.open('POST', 'http://aqueous-ocean-2864.herokuapp.com/games', true);
+          xhrNewGame.setRequestHeader('Content-Type', 'application/json; charset=utf-8');
+          var json = JSON.stringify({
+              "type" : 0//,
+              //"password" : 'abc'
+          });
+
+          // 3. Отсылаем запрос
+          xhrNewGame.send(json);
+
+          xhrNewGame.onreadystatechange = function() {
+              if (xhrNewGame.readyState != 4) {
+                return;
+              }
+
+              console.log('Готово!');
+
+              // 4. Если код ответа сервера не 200, то это ошибка
+              if (xhrNewGame.status != 201) {
+                  // обработать ошибку
+                  alert( xhrNewGame.status + ': ' + xhrNewGame.statusText ); // пример вывода: 404: Not Found
+              } else {
+                  // вывести результат
+                  alert( JSON.parse(xhrNewGame.responseText).token); // responseText -- текст ответа.
+              }
+          }
         }
     }
 
