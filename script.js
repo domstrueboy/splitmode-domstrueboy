@@ -5,7 +5,6 @@
         init: function(){
           this.newGame();
           this.appBuild();
-          this.networkGame();
         },
 
         newGame: function(){
@@ -79,6 +78,13 @@
         menuControl: function(){
           $(".newGame").click(function(){
             app.newGame();
+            app.newGameRequest();
+            app.networkGame();
+          });
+
+          $(".joinGame").click(function () {
+            app.joinGameRequest();
+            app.networkGame();
           });
         },
 
@@ -102,7 +108,7 @@
                     app.nextGame();
                   }
                 }
-    					})
+    					});
             },
 
         resetBoard: function(){
@@ -153,10 +159,10 @@
         },
 
         networkGame: function () {
-          this.listGameRequest();
+
         },
 
-        listGameRequest: function () {
+        /*listGameRequest: function () {
           // 1. Создаём новый объект XMLHttpRequest
           var xhrNewGame = new XMLHttpRequest();
 
@@ -187,40 +193,49 @@
                   alert(tokens); // responseText -- текст ответа.
               }
           }
-        },
+        },*/
 
-        newGameRequest: function () {
-          // 1. Создаём новый объект XMLHttpRequest
-          var xhrNewGame = new XMLHttpRequest();
+        request: function (requestType, requestRoute, requestBody, requestCode) {
 
-          // 2. Конфигурируем его: GET-запрос на URL 'phones.json'
-          xhrNewGame.open('POST', 'http://aqueous-ocean-2864.herokuapp.com/games', true);
-          xhrNewGame.setRequestHeader('Content-Type', 'application/json; charset=utf-8');
-          var json = JSON.stringify({
-              "type" : 0//,
-              //"password" : 'abc'
-          });
+          var xhr = new XMLHttpRequest(); //Создаём новый объект XMLHttpRequest
 
-          // 3. Отсылаем запрос
-          xhrNewGame.send(json);
+          // Конфигурируем его: POST-запрос на URL 'http://aqueous-ocean-2864.herokuapp.com/games' :
+          xhr.open(requestType, 'http://aqueous-ocean-2864.herokuapp.com/' + requestRoute, true);
+          xhr.setRequestHeader('Content-Type', 'application/json; charset=utf-8');
 
-          xhrNewGame.onreadystatechange = function() {
-              if (xhrNewGame.readyState != 4) {
+          xhr.send( // Отсылаем запрос
+            JSON.stringify(requestBody)
+          );
+
+          xhr.onreadystatechange = function() {
+              if (xhr.readyState != 4) {
                 return;
               }
 
-              console.log('Готово!');
-
-              // 4. Если код ответа сервера не 200, то это ошибка
-              if (xhrNewGame.status != 201) {
-                  // обработать ошибку
-                  alert( xhrNewGame.status + ': ' + xhrNewGame.statusText ); // пример вывода: 404: Not Found
+              // Если код ответа сервера не 201, то это ошибка
+              if (xhr.status == requestCode) {
+                return JSON.parse(xhr.responseText); // responseText -- текст ответа.
               } else {
-                  // вывести результат
-                  alert( JSON.parse(xhrNewGame.responseText).token); // responseText -- текст ответа.
+                  // обработать ошибку
+                  alert( xhr.status + ': ' + xhr.statusText ); // пример вывода: 404: Not Found
               }
           }
+        },
+
+        newGameRequest: function () {
+
+          this.request('POST', 'games/', {"type" : 0}, 201);
+
+        },
+
+        joinGameRequest: function () {
+
+          var token = prompt("token = ");
+
+          this.request('GET', 'games/' + token, {}, 200);
+
         }
+
     }
 
     app.init();
