@@ -17,6 +17,47 @@
           this.scoreUpdate();
         },
 
+        newNetGame: function () {
+
+        	this.newGame();
+
+          	this.gameState = this.request('POST', 'games/', {"type" : 0}, 201);
+
+          	console.log("token = " + this.gameState.token);
+          	alert("token = " + this.gameState.token);
+
+
+        },
+
+        joinNetGame: function () {
+
+	        var token = prompt("token = ", '');
+
+	        this.gameState = this.request('GET', 'games/' + token, {}, 200);
+
+	        if(this.gameState.state === "first-player-turn"){
+	        	this.state = "zero";
+	        } else if(this.gameState.state === "second-player-turn"){
+	        	this.state = "cross";
+	        }
+
+	        this.gameState.field1Bin = this.gameState.field1.toString(2).split("");
+	        this.gameState.field2Bin = this.gameState.field2.toString(2).split("");
+
+	        var field = $(".cell");
+	        for(var i = 0; i < 9; i++){
+
+	        	field[i].removeClass("zero").removeClass("cross");
+
+	        	if(this.gameState.field1Bin[i] === "1"){
+	        		field[i].addClass("zero");
+	        	} else if(this.gameState.field2Bin[i] === "1"){
+	        		field[i].addClass("cross");
+	        	}
+	        }
+
+        },
+
         appBuild: function(){
           this.menuControl();
           this.clickControl();
@@ -78,13 +119,14 @@
         menuControl: function(){
           $(".newGame").click(function(){
             app.newGame();
-            app.newGameRequest();
-            app.networkGame();
           });
 
-          $(".joinGame").click(function () {
-            app.joinGameRequest();
-            app.networkGame();
+          $(".newNetGame").click(function(){
+            app.newNetGame();
+          });
+
+          $(".joinNetGame").click(function () {
+            app.joinNetGame();
           });
         },
 
@@ -158,43 +200,6 @@
 
         },
 
-        networkGame: function () {
-
-        },
-
-        /*listGameRequest: function () {
-          // 1. Создаём новый объект XMLHttpRequest
-          var xhrNewGame = new XMLHttpRequest();
-
-          // 2. Конфигурируем его: GET-запрос на URL 'phones.json'
-          xhrNewGame.open('GET', 'http://aqueous-ocean-2864.herokuapp.com/games', true);
-
-          // 3. Отсылаем запрос
-          xhrNewGame.send();
-
-          xhrNewGame.onreadystatechange = function() {
-              if (xhrNewGame.readyState != 4) {
-                return;
-              }
-
-              console.log('Готово!');
-
-              // 4. Если код ответа сервера не 200, то это ошибка
-              if (xhrNewGame.status != 200) {
-                  // обработать ошибку
-                  alert( xhrNewGame.status + ': ' + xhrNewGame.statusText ); // пример вывода: 404: Not Found
-              } else {
-                  // вывести результат
-                  var response = JSON.parse(xhrNewGame.responseText);
-                  var tokens = [];
-                  for(var i = 0; i < response.length; i++){
-                    tokens.push(response[i].token);
-                  }
-                  alert(tokens); // responseText -- текст ответа.
-              }
-          }
-        },*/
-
         request: function (requestType, requestRoute, requestBody, requestCode) {
 
           var xhr = new XMLHttpRequest(); //Создаём новый объект XMLHttpRequest
@@ -220,20 +225,6 @@
                   alert( xhr.status + ': ' + xhr.statusText ); // пример вывода: 404: Not Found
               }
           }
-        },
-
-        newGameRequest: function () {
-
-          this.request('POST', 'games/', {"type" : 0}, 201);
-
-        },
-
-        joinGameRequest: function () {
-
-          var token = prompt("token = ");
-
-          this.request('GET', 'games/' + token, {}, 200);
-
         }
 
     }
