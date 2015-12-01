@@ -31,17 +31,31 @@
 
         joinNetGame: function () {
 
-	        var token = prompt("token = ", '');
+	        this.token = prompt("token = ", '');
 
-	        this.gameState = this.request('GET', 'games/' + token, {}, 200);
+	        this.gameState = this.request('GET', 'games/' + this.token, {}, 200);
 
-	        if(this.gameState.state === "first-player-turn"){
-	        	this.state = "zero";
-	        } else if(this.gameState.state === "second-player-turn"){
-	        	this.state = "cross";
-	        }
+	        this.stateFromNet();
 
-	        this.gameState.field1Bin = this.gameState.field1.toString(2).split("");
+	        this.fieldFromNet();
+
+        },
+
+        stateFromNet: function() {
+
+        	if(this.gameState.state === "first-player-turn"){
+        	    this.state = "zero";
+        	} else if(this.gameState.state === "second-player-turn"){
+        	    this.state = "cross";
+        	} else {
+        		console.log("Error in stateFromNet");
+        		alert("Error in stateFromNet");
+        	}
+       	},
+
+        fieldFromNet: function() {
+
+        	this.gameState.field1Bin = this.gameState.field1.toString(2).split("");
 	        this.gameState.field2Bin = this.gameState.field2.toString(2).split("");
 
 	        var field = $(".cell");
@@ -56,6 +70,80 @@
 	        	}
 	        }
 
+        },
+
+        updateGameState: function() {
+        	this.gameState = this.request('GET', 'games/' + this.token, {}, 200);
+
+        	stateFromNet();
+        	fieldFromNet();
+
+        },
+
+        makeATurn: function() {
+
+        	var player;
+
+        	if(app.state === "zero"){
+        		player = 1;
+        	} else if(app.state === "cross"){
+        		player = 2;
+        	} else {
+        		console.log("Error in makeATurn");
+        		alert("Error in makeATurn");
+        	}
+
+
+
+	        var field = $(".cell");
+	        for(var i = 0; i < 9; i++){
+
+	        	if(field[i].hasClass("zero")){
+	        		this.gameState.field1Bin.push('1');
+	        	} else if(field[i].hasClass("cross")){
+	        		this.gameState.field2Bin.push('1');
+	        	} else {
+	        		this.gameState.field1Bin.push('0');
+	        		this.gameState.field2Bin.push('0');
+	        	}
+	        }
+
+	        this.gameState.field1 = this.gameState.field1Bin.join("").parseInt();
+	        this.gameState.field2 = this.gameState.field2Bin.join("").parseInt();
+
+
+
+        	this.gameState = this.request('PUT', 'games/' + this.token, {
+        		"player": player,
+        		"position": 0
+        	}, 200);
+        },
+
+        request: function (requestType, requestRoute, requestBody, requestCode) {
+
+          var xhr = new XMLHttpRequest(); //Создаём новый объект XMLHttpRequest
+
+          // Конфигурируем его: POST-запрос на URL 'http://aqueous-ocean-2864.herokuapp.com/games' :
+          xhr.open(requestType, 'http://aqueous-ocean-2864.herokuapp.com/' + requestRoute, true);
+          xhr.setRequestHeader('Content-Type', 'application/json; charset=utf-8');
+
+          xhr.send( // Отсылаем запрос
+            JSON.stringify(requestBody)
+          );
+
+          xhr.onreadystatechange = function() {
+              if (xhr.readyState != 4) {
+                return;
+              }
+
+              // Если код ответа сервера не 201, то это ошибка
+              if (xhr.status == requestCode) {
+                return JSON.parse(xhr.responseText); // responseText -- текст ответа.
+              } else {
+                  // обработать ошибку
+                  alert( xhr.status + ': ' + xhr.statusText ); // пример вывода: 404: Not Found
+              }
+          }
         },
 
         appBuild: function(){
@@ -128,6 +216,10 @@
           $(".joinNetGame").click(function () {
             app.joinNetGame();
           });
+
+          $(".updateGameState").click(function () {
+            app.updateGameState();
+          });
         },
 
         clickControl: function(){
@@ -198,33 +290,6 @@
              this.nextGame();
           }
 
-        },
-
-        request: function (requestType, requestRoute, requestBody, requestCode) {
-
-          var xhr = new XMLHttpRequest(); //Создаём новый объект XMLHttpRequest
-
-          // Конфигурируем его: POST-запрос на URL 'http://aqueous-ocean-2864.herokuapp.com/games' :
-          xhr.open(requestType, 'http://aqueous-ocean-2864.herokuapp.com/' + requestRoute, true);
-          xhr.setRequestHeader('Content-Type', 'application/json; charset=utf-8');
-
-          xhr.send( // Отсылаем запрос
-            JSON.stringify(requestBody)
-          );
-
-          xhr.onreadystatechange = function() {
-              if (xhr.readyState != 4) {
-                return;
-              }
-
-              // Если код ответа сервера не 201, то это ошибка
-              if (xhr.status == requestCode) {
-                return JSON.parse(xhr.responseText); // responseText -- текст ответа.
-              } else {
-                  // обработать ошибку
-                  alert( xhr.status + ': ' + xhr.statusText ); // пример вывода: 404: Not Found
-              }
-          }
         }
 
     }
