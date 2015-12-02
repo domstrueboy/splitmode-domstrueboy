@@ -194,9 +194,11 @@
         },
 
         friendshipWin: function(){
-    				this.scoreZero++;
-    				this.scoreCross++;
+    		this.scoreZero++;
+    		this.scoreCross++;
             this.scoreUpdate();
+            this.nextGame();
+
         },
 
         scoreUpdate: function(){
@@ -224,7 +226,7 @@
 
         clickControl: function(){
 
-			       $(".cell").click(function(){
+			$(".cell").click(function(){
 
                 if(!$(this).hasClass("zero") && !$(this).hasClass("cross")){
 
@@ -232,62 +234,69 @@
                   app.nextStep();
 
                   if(app.step > 5){
-                    app.detectWin("zero");
-                    app.detectWin("cross");
+                    app.detectWin();
                   }
 
-                  if(app.step > 9){
-                    alert("Friendship win!");
-                    app.friendshipWin();
-                    app.nextGame();
-                  }
                 }
-    					});
-            },
+
+    		});
+        },
 
         resetBoard: function(){
           $(".cell").removeClass("zero").removeClass("cross");
         },
 
-        detectWin: function(classDetected){ //stupid detection
+        detectWin: function(){
 
-          if(
-             ($(".row1:eq(0)").hasClass(classDetected) &&
-             $(".row1:eq(1)").hasClass(classDetected) &&
-             $(".row1:eq(2)").hasClass(classDetected)) ||
+          var zeros = [];
+          var crosses = [];
 
-             ($(".row2:eq(0)").hasClass(classDetected) &&
-             $(".row2:eq(1)").hasClass(classDetected) &&
-             $(".row2:eq(2)").hasClass(classDetected)) ||
+          for(var i = 0; i < 9; i++){
 
-             ($(".row3:eq(0)").hasClass(classDetected) &&
-             $(".row3:eq(1)").hasClass(classDetected) &&
-             $(".row3:eq(2)").hasClass(classDetected)) ||
+          	if($('.cell:eq(' + i + ')').hasClass("zero")){
 
-             ($(".column1:eq(0)").hasClass(classDetected) &&
-             $(".column1:eq(1)").hasClass(classDetected) &&
-             $(".column1:eq(2)").hasClass(classDetected)) ||
+          		zeros.push('1');
+          		crosses.push('0');
 
-             ($(".column2:eq(0)").hasClass(classDetected) &&
-             $(".column2:eq(1)").hasClass(classDetected) &&
-             $(".column2:eq(2)").hasClass(classDetected)) ||
+          	} else if($('.cell:eq(' + i + ')').hasClass("cross")){
 
-             ($(".column3:eq(0)").hasClass(classDetected) &&
-             $(".column3:eq(1)").hasClass(classDetected) &&
-             $(".column3:eq(2)").hasClass(classDetected)) ||
+          		crosses.push('1');
+          		zeros.push('0');
 
-             ($(".row1:eq(0)").hasClass(classDetected) &&
-             $(".row2:eq(1)").hasClass(classDetected) &&
-             $(".row3:eq(2)").hasClass(classDetected)) ||
+          	} else {
 
-             ($(".row1:eq(2)").hasClass(classDetected) &&
-             $(".row2:eq(1)").hasClass(classDetected) &&
-             $(".row3:eq(0)").hasClass(classDetected))
-           ){
-             this.prevWinner = classDetected;
-             this.playerWin(classDetected);
-             alert(classDetected.charAt(0).toUpperCase() + classDetected.substr(1) + " WIN!");
-             this.nextGame();
+          		zeros.push('0');
+          		crosses.push('0');
+
+          	}
+          }
+
+          zeros = zeros.join('');
+          crosses = crosses.join('');
+
+          zeros = parseInt(zeros, 2);
+          crosses = parseInt(crosses, 2);
+
+          var wins = [ 448, 56, 7, 292, 146, 73, 84, 273 ];
+
+          if(wins.indexOf(zeros) != -1){
+
+          	this.prevWinner = "zero";
+            this.playerWin("zero");
+            alert("ZERO WIN!");
+            this.nextGame();
+
+          } else if(wins.indexOf(crosses) != -1){
+
+          	this.prevWinner = "cross";
+            this.playerWin("cross");
+            alert("CROSS WIN!");
+            this.nextGame();
+
+          } else if(app.step > 9){
+                    
+            alert("FRIENDSHIP WIN!");
+            app.friendshipWin();
           }
 
         }

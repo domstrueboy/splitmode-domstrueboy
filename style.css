@@ -54,7 +54,13 @@ body > .container {
   content:"";
   height: 10px;
   width: 80px;
-  transform: rotate(45deg);
+  
+  	-webkit-transform: rotate(45deg);
+ 	-moz-transform: rotate(45deg);
+ 	-o-transform: rotate(45deg);
+ 	-ms-transform: rotate(45deg);
+ 	transform: rotate(45deg);
+
   border-radius: 5px;
   position: absolute;
   top: 45px;
@@ -70,7 +76,13 @@ body > .container {
   top: 45px;
   left: 10px;
   border-radius: 5px;
-  transform: rotate(-45deg);
+  
+   	-webkit-transform: rotate(-45deg);
+ 	-moz-transform: rotate(-45deg);
+ 	-o-transform: rotate(-45deg);
+ 	-ms-transform: rotate(-45deg);
+ 	transform: rotate(-45deg);
+
   background-color: black;
 
 }
@@ -82,19 +94,8 @@ body > .container {
   top: 10px;
   left: 10px;
   border-radius: 50%;
-  background: black;
+  border: 10px solid black;
   position: absolute;
-}
-
-.zero::after {
-  content:"";
-  position: absolute;
-  top: 20px;
-  left: 20px;
-  width: 60px;
-  height: 60px;
-  border-radius: 50%;
-  background-color: #F7F7F9;
 }
 
 .score-cell {
@@ -108,7 +109,13 @@ body > .container {
   content:"";
   height: 5px;
   width: 50px;
-  transform: rotate(45deg);
+
+	-webkit-transform: rotate(45deg);
+ 	-moz-transform: rotate(45deg);
+ 	-o-transform: rotate(45deg);
+ 	-ms-transform: rotate(45deg);
+ 	transform: rotate(45deg);
+
   border-radius: 2px;
   position: absolute;
   top: 27px;
@@ -124,7 +131,13 @@ body > .container {
   top: 27px;
   left: 5px;
   border-radius: 2px;
-  transform: rotate(-45deg);
+
+	-webkit-transform: rotate(-45deg);
+ 	-moz-transform: rotate(-45deg);
+ 	-o-transform: rotate(-45deg);
+ 	-ms-transform: rotate(-45deg);
+ 	transform: rotate(-45deg);
+
   background-color: black;
 
 }
@@ -135,20 +148,9 @@ body > .container {
   width: 40px;
   top: 10px;
   right: 10px;
+  border: 5px solid black;
   border-radius: 50%;
-  background: black;
   position: absolute;
-}
-
-.score-zero::after {
-  content:"";
-  position: absolute;
-  top: 15px;
-  right: 15px;
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
-  background-color: #F7F7F9;
 }
 
 .score-value {
