@@ -1,21 +1,18 @@
 function loadModule(module) {
   var s = document.createElement("script");
 
-  s.src = module;
+  s.src = module + ".js";
 
   document.body.appendChild(s);
 
   s.onload = function () {
-    app.init();
+    eval(module).init();
   }
 }
 
-loadModule("localGame.js");
-
+//loadModule("localGame");
+loadModule("networkGame");
+/*
 $(".newNetGame", ".joinNetGame").click(function () {
-  loadModule("networkGame.js");
-});
-
-$(".newGame").click(function () {
-  loadModule("localGame.js");
-});
+  loadModule("networkGame");
+});*/

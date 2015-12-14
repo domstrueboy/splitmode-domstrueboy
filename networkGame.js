@@ -1,4 +1,4 @@
-    var app = {
+    var networkGame = {
 
         init: function(){
           this.appBuild();
@@ -9,38 +9,80 @@
 
         newNetGame: function () {
 
-          app.thisPlayer = "first-player-turn";
+          this.thisPlayer = "first-player-turn";
 
           this.request('POST', 'games/', {"type" : 0}, 201).then(
           	function(response) {
 
-          		app.game = response;
+          		networkGame.game = response;
 
-          		console.log("token = " + app.game.token);
-          		alert("token = " + app.game.token);
+          		console.log("token = " + networkGame.game.token);
+          		prompt("token = ", networkGame.game.token);
 
-          		app.stateFromNet();
-          		app.fieldFromNet();
-              app.updateGame();
+          		networkGame.stateFromNet();
+          		networkGame.fieldFromNet();
+              //networkGame.updateGame();
+              networkGame.setIntervalUpdate();
+              networkGame.displayCurrentPlayer();
           	}
           );
         },
 
         joinNetGame: function () {
 
-          clearInterval(app.intervalId);
-          app.thisPlayer = "second-player-turn";
+          this.thisPlayer = "second-player-turn";
 
 	        var token = prompt("token = ", '');
 
 	        this.request('GET', 'games/' + token, {}, 200).then(
 	        	function (response) {
-	        		app.game = response;
-	        		app.stateFromNet();
-	        		app.fieldFromNet();
-              app.updateGame();
+
+	        		networkGame.game = response;
+
+	        		networkGame.stateFromNet();
+	        		networkGame.fieldFromNet();
+              //networkGame.updateGame();
+              networkGame.setIntervalUpdate();
+              networkGame.displayCurrentPlayer();
 	        	}
 	        );
+        },
+
+        nextNetGame: function () {
+
+          this.request('POST', 'games/', {"type" : 0}, 201).then(
+            function(response) {
+
+              networkGame.game = response;
+
+              console.log("token = " + networkGame.game.token);
+              prompt("token = ", networkGame.game.token);
+
+              networkGame.stateFromNet();
+              networkGame.fieldFromNet();
+              //networkGame.updateGame();
+              networkGame.setIntervalUpdate();
+              networkGame.displayCurrentPlayer();
+            }
+          );
+        },
+
+        joinNextNetGame: function () {
+
+          var token = prompt("token = ", '');
+
+          this.request('GET', 'games/' + token, {}, 200).then(
+            function (response) {
+
+              networkGame.game = response;
+
+              networkGame.stateFromNet();
+              networkGame.fieldFromNet();
+              //networkGame.updateGame();
+              networkGame.setIntervalUpdate();
+              networkGame.displayCurrentPlayer();
+            }
+          );
         },
 
         stateFromNet: function() {
@@ -79,31 +121,34 @@
 
         updateGame: function() {
 
-          function func() {
-            app.request('GET', 'games/' + app.game.token, {}, 200).then(
-          		function (response) {
-          			app.game = response;
-          			app.stateFromNet();
-          			app.fieldFromNet();
-                app.displayCurrentPlayer();
-                app.detectWin();
-                if(app.thisPlayer === app.game.state){
-                  $(".cell").removeClass("disabled");
-                }
-          		}
-          	);
-          }
+              networkGame.request('GET', 'games/' + networkGame.game.token, {}, 200).then(
 
-          app.intervalID = setInterval(func, 2000);
+                  function (response) {
+                      networkGame.game = response;
+                      networkGame.stateFromNet();
+                      networkGame.fieldFromNet();
+                      networkGame.displayCurrentPlayer();
+                      networkGame.detectWin();
+            
+                      if(networkGame.thisPlayer === networkGame.game.state){
+                          $(".cell").removeClass("disabled");
+                      }
+                  }
+              );
+
+        },
+
+        setIntervalUpdate: function () {
+            networkGame.tmp = setInterval(networkGame.updateGame, 1000);
         },
 
         makeATurn: function(clickedCell) {
 
         	var player, position;
 
-        	if(app.state === "zero"){
+        	if(networkGame.state === "zero"){
         		player = 1;
-        	} else if(app.state === "cross"){
+        	} else if(networkGame.state === "cross"){
         		player = 2;
         	} else {
         		console.log("Error in makeATurn");
@@ -125,11 +170,10 @@
 
         		function (response) {
 
-        			app.game = response;
-	        		app.stateFromNet();
-	        		app.fieldFromNet();
-              app.displayCurrentPlayer();
-              app.detectWin();
+        			networkGame.game = response;
+	        		networkGame.stateFromNet();
+	        		networkGame.fieldFromNet();
+              networkGame.displayCurrentPlayer();
         		}
         	);
         },
@@ -169,53 +213,75 @@
         },
 
         detectWin: function () {
-          if(app.game.state === "first-player-wins"){
-            clearInterval(app.intervalId);
-            alert(app.game.state + "!");
+
+          if(this.game.state === "first-player-wins"){
+    
+            clearInterval(networkGame.tmp);
+            
             this.scoreZero += 2;
             this.scoreUpdate();
             this.prevWinner = "first-player";
-            if(app.thisPlayer[0] === app.game.state[0]){
-              app.newNetGame();
+
+            alert(this.game.state + "!");
+
+            if(this.thisPlayer[0] === this.game.state[0]){
+              console.log('this.thisPlayer[0] = ' + this.thisPlayer[0]);
+              console.log('this.game.state[0] = ' + this.game.state[0]);
+              this.nextNetGame();
             } else {
-              app.joinNetGame();
+              this.joinNextNetGame();
             }
-          } else if(app.game.state === "second-player-wins"){
-            clearInterval(app.intervalId);
-            alert(app.game.state + "!");
+
+          } else if(this.game.state === "second-player-wins"){
+
+            clearInterval(networkGame.tmp);
+            
             this.scoreCross += 2;
             this.scoreUpdate();
             this.prevWinner = "second-player";
-            if(app.thisPlayer[0] === app.game.state[0]){
-              app.newNetGame();
+
+            alert(this.game.state + "!");
+
+            if(this.thisPlayer[0] === this.game.state[0]){
+              
+              console.log('this.thisPlayer[0] = ' + this.thisPlayer[0]);
+              console.log('this.game.state[0] = ' + this.game.state[0]);
+              this.nextNetGame();
             } else {
-              app.joinNetGame();
+              this.joinNextNetGame();
             }
-          } else if(app.game.state === "tie"){
-            clearInterval(app.intervalId);
-            alert(app.game.state + "!");
+
+          } else if(this.game.state === "tie"){
+
+            clearInterval(networkGame.tmp);
+            
             this.scoreZero++;
         		this.scoreCross++;
             this.scoreUpdate();
 
-              if(app.thisPlayer[0] === app.prevWinner[0]){
-                app.newNetGame();
-              } else {
-                app.joinNetGame();
-              }
+            alert(this.game.state + "!");
+
+            if(this.thisPlayer[0] === this.prevWinner[0]){
+                console.log('this.thisPlayer[0] = ' + this.thisPlayer[0]);
+                console.log('this.game.state[0] = ' + this.game.state[0]);
+                this.nextNetGame();
+            } else {
+                this.joinNextNetGame();
+            }
           }
+
         },
 
         scoreUpdate: function(){
-          $(".score-playerZero").text("" + app.scoreZero);
-          $(".score-playerCross").text("" + app.scoreCross);
+          $(".score-playerZero").text("" + networkGame.scoreZero);
+          $(".score-playerCross").text("" + networkGame.scoreCross);
         },
 
         displayCurrentPlayer: function(){
-          if(app.state === "zero"){
+          if(networkGame.state === "zero"){
             $(".score-cell-cross").removeClass("score-cross");
             $(".score-cell-zero").addClass("score-zero");
-          } else if(app.state === "cross"){
+          } else if(networkGame.state === "cross"){
             $(".score-cell-zero").removeClass("score-zero");
             $(".score-cell-cross").addClass("score-cross");
           }
@@ -224,25 +290,22 @@
         menuControl: function(){
 
           $(".newNetGame").click(function(){
-            app.newNetGame();
+            networkGame.newNetGame();
           });
 
           $(".joinNetGame").click(function () {
-            app.joinNetGame();
+            networkGame.joinNetGame();
           });
 
-          $(".updateGame").click(function () {
-            app.updateGame();
-          });
         },
 
         clickControl: function(){
 
           $(".cell").click(function(){
-            if(app.thisPlayer === app.game.state){
+            if(networkGame.thisPlayer === networkGame.game.state){
               if(!$(this).hasClass("zero") && !$(this).hasClass("cross")){
-                $(this).addClass(app.state);
-                app.makeATurn(this);
+                $(this).addClass(networkGame.state);
+                networkGame.makeATurn(this);
                 $(".cell").addClass("disabled")
               }
             }
