@@ -54,7 +54,7 @@ body > .container {
   content:"";
   height: 10px;
   width: 80px;
-  
+
   	-webkit-transform: rotate(45deg);
  	-moz-transform: rotate(45deg);
  	-o-transform: rotate(45deg);
@@ -76,7 +76,7 @@ body > .container {
   top: 45px;
   left: 10px;
   border-radius: 5px;
-  
+
    	-webkit-transform: rotate(-45deg);
  	-moz-transform: rotate(-45deg);
  	-o-transform: rotate(-45deg);
@@ -162,4 +162,8 @@ body > .container {
 
 small {
   color: gray;
+}
+
+.disabled {
+  background-color: darkgrey;
 }
