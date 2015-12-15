@@ -79,19 +79,11 @@
           $(".newGame").click(function(){
             localGame.newGame();
           });
-
-          /*$(".newNetGame").click(function(){
-            app.newNetGame();
-          });*/
-
-          /*$(".joinNetGame").click(function () {
-            app.joinNetGame();
-          });*/
         },
 
         clickControl: function(){
 
-			$(".cell").click(function(){
+			      $(".cell").click(function(){
 
                 if(!$(this).hasClass("zero") && !$(this).hasClass("cross")){
 
@@ -101,10 +93,8 @@
                   if(localGame.step > 5){
                     localGame.detectWin();
                   }
-
                 }
-
-    		});
+    		    });
         },
 
         resetBoard: function(){
@@ -139,6 +129,9 @@
           zeros = zeros.join('');
           crosses = crosses.join('');
 
+          console.log("zerosBin = " + zeros);
+          console.log("crossesBin = " + crosses);
+
           zeros = parseInt(zeros, 2);
           crosses = parseInt(crosses, 2);
 
@@ -158,7 +151,7 @@
             alert("CROSS WIN!");
             this.nextGame();
 
-          } else if(localGame.step > 9){
+          } else if(wins.indexOf(zeros) === -1 && wins.indexOf(crosses) === -1 && localGame.step > 9){
 
             alert("FRIENDSHIP WIN!");
             localGame.friendshipWin();

@@ -10,9 +10,8 @@ function loadModule(module) {
   }
 }
 
-//loadModule("localGame");
-loadModule("networkGame");
-/*
-$(".newNetGame", ".joinNetGame").click(function () {
+loadModule("localGame");
+
+$(".newNetGame, .joinNetGame").click(function () {
   loadModule("networkGame");
-});*/
+});
