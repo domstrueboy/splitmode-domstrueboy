@@ -63,8 +63,8 @@
         },
 
         friendshipWin: function(){
-    		this.scoreZero++;
-    		this.scoreCross++;
+        		this.scoreZero++;
+        		this.scoreCross++;
             this.scoreUpdate();
             this.nextGame();
 
@@ -129,34 +129,48 @@
           zeros = zeros.join('');
           crosses = crosses.join('');
 
-          console.log("zerosBin = " + zeros);
-          console.log("crossesBin = " + crosses);
+          var wins = [ '111000000', '000111000', '000000111',
+                       '100100100', '010010010', '001001001',
+                       '100010001', '001010100' ];
 
-          zeros = parseInt(zeros, 2);
-          crosses = parseInt(crosses, 2);
+          var zerosCount;
+          var crossesCount;
 
-          var wins = [ 448, 56, 7, 292, 146, 73, 84, 273 ];
+          for(var i = 0; i < wins.length; i++){
+            
+            zerosCount = 0;
+            crossesCount = 0;
+            
+            for(var j = 0; j < 9; j++){
+              if(wins[i][j] === '1' && zeros[j] === '1'){
+                zerosCount++;
+              }
+              if(wins[i][j] === '1' && crosses[j] === '1'){
+                crossesCount++;
+              }
+            }
 
-          if(wins.indexOf(zeros) != -1){
+            console.log(zeros + crosses);
 
-          	this.prevWinner = "zero";
-            this.playerWin("zero");
-            alert("ZERO WIN!");
-            this.nextGame();
+            if(zerosCount === 3){
 
-          } else if(wins.indexOf(crosses) != -1){
+                this.prevWinner = "zero";
+                this.playerWin("zero");
+                alert("ZERO WIN!");
+                this.nextGame();
 
-          	this.prevWinner = "cross";
-            this.playerWin("cross");
-            alert("CROSS WIN!");
-            this.nextGame();
+            } else if(crossesCount === 3){
 
-          } else if(wins.indexOf(zeros) === -1 && wins.indexOf(crosses) === -1 && localGame.step > 9){
+                this.prevWinner = "cross";
+                this.playerWin("cross");
+                alert("CROSS WIN!");
+                this.nextGame();
 
-            alert("FRIENDSHIP WIN!");
-            localGame.friendshipWin();
+            } else if(toString(parseInt(zerosCount, 2) + parseInt(crossesCount, 2)) === '111111111'/*zerosCount !== 3 && crossesCount !== 3 && localGame.step > 9*/){
+                
+                alert("FRIENDSHIP WIN!");
+                this.friendshipWin();
+            }
           }
-
         }
-
     }
