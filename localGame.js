@@ -59,15 +59,18 @@
     				this.scoreCross += 2;
     			}
 
+          this.prevWinner = classDetected;
           this.scoreUpdate();
+          alert(classDetected + " WIN!")
+          this.nextGame();
         },
 
         friendshipWin: function(){
         		this.scoreZero++;
         		this.scoreCross++;
             this.scoreUpdate();
+            alert("FRIENDSHIP WIN!")
             this.nextGame();
-
         },
 
         scoreUpdate: function(){
@@ -92,6 +95,10 @@
 
                   if(localGame.step > 5){
                     localGame.detectWin();
+                  }
+
+                  if(localGame.step > 9){
+                    localGame.friendshipWin();  
                   }
                 }
     		    });
@@ -150,26 +157,16 @@
               }
             }
 
-            console.log(zeros + crosses);
-
             if(zerosCount === 3){
 
-                this.prevWinner = "zero";
-                this.playerWin("zero");
-                alert("ZERO WIN!");
-                this.nextGame();
+                this.playerWin("zero");               
+                break;
+            }
 
-            } else if(crossesCount === 3){
+            else if(crossesCount === 3){
 
-                this.prevWinner = "cross";
                 this.playerWin("cross");
-                alert("CROSS WIN!");
-                this.nextGame();
-
-            } else if(toString(parseInt(zerosCount, 2) + parseInt(crossesCount, 2)) === '111111111'/*zerosCount !== 3 && crossesCount !== 3 && localGame.step > 9*/){
-                
-                alert("FRIENDSHIP WIN!");
-                this.friendshipWin();
+                break;
             }
           }
         }
